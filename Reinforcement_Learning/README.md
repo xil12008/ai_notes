@@ -39,7 +39,7 @@ This recursion says: given the current state $s_i$, the best policy will pick an
 
 DQN (Deep Q-Network) builds a deep neutral network which:
 - takes the current state $s$ as input
-- outputs K head, each head being the action value $Q^{\*}(s, a) for each action a$.
+- outputs K head, each head being the action value $Q^{\*}(s, a)$ for each action $a$.
 
 If we have such a model, under any state, the agent can pick the best action corresponding to max output head (ie. we obtained the best policy).
 
