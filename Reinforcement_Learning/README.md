@@ -29,13 +29,13 @@ Assume the action space consists of K different discrete choices.
 
 Q-learning estimates the "value" taking each action under the current state $s_i$ at time $t$:
 
-$Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^{i - t} r_t$
+$Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^{i - t} r_i$
 
 The best policy $\theta^{\*}$ will pick an action $a_i^{\*}$ that maximizes $Q(s_i, a_i) $. Thus,
 
-$Q^{\*}(s_i, a_i) = max_{\theta} Q (s_i, a_i) = max_{\theta} \sum_{i=t}^{N} \gamma^{i-t} r_i = max_{\theta} \left( r(s_i, a_i) + \gamma Q^{\*}(s_{i+1}, a_{i+1}) \right) $
+$Q^{\*}(s_t, a_t) = max_{\theta} Q (s_t, a_t) = max_{\theta} \sum_{i=t}^{N} \gamma^{i-t} r_i = max_{\theta} \left( r(s_t, a_t) + \gamma Q^{\*}(s_{t+1}, a_{t+1}) \right) $
 
-This recursion says: given the current state $s_i$, the best policy will pick an action that maximizes the sum of instant reward $r(s_i, a_i)$ and the discounted future "value".
+This recursion says: given the current state $s_t$, the best policy will pick an action that maximizes the sum of the **instant** reward $r_t(s_t, a_t)$ and the discounted **future** "value".
 
 DQN (Deep Q-Network) builds a deep neutral network which:
 - takes the current state $s$ as input
