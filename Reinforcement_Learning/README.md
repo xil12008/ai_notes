@@ -31,7 +31,7 @@ Q-learning estimates the "value" taking each action under the current state $s_i
 
 $Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^{i - t} r_t$
 
-The best policy $\theta^{\*}$ will pick an action $a_i^{\*}$ that maximizes $ Q(s_i, a_i) $. Thus,
+The best policy $\theta^{\*}$ will pick an action $a_i^{\*}$ that maximizes $Q(s_i, a_i) $. Thus,
 
 $Q^{\*}(s_i, a_i) = max_{\theta} Q (s_i, a_i) = max_{\theta} \sum_{i=t}^{N} \gamma^{i-t} r_i = max_{\theta} \left( r(s_i, a_i) + \gamma Q^{\*}(s_{i+1}, a_{i+1}) \right) $
 
@@ -39,7 +39,7 @@ This recursion says: given the current state $s_i$, the best policy will pick an
 
 DQN (Deep Q-Network) builds a deep neutral network which:
 - takes the current state $s$ as input
-- outputs K head, each head being the action value $Q^{\*}(s, a) \for each action a$.
+- outputs K head, each head being the action value $Q^{\*}(s, a) for each action a$.
 
 If we have such a model, under any state, the agent can pick the best action corresponding to max output head (ie. we obtained the best policy).
 
