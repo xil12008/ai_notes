@@ -33,7 +33,7 @@ $ Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^(i - t) r_t $
 
 The best policy $\theta^{\*}$ will pick an action $a_i^{\*}$ that maximizes $ Q(s_i, a_i) $. Thus,
 
-$Q^{\*}(s_i, a_i) = max_{\theta} Q (s_i, a_i) = max_{\theta} \sum_{i=t}^{N} \gamma^(i-t) r_i = max_{\theta} \left r(s_i, a_i) + \gamma Q^{\*}(s_{i+1}, a_{i+1}) \right $
+$Q^{\*}(s_i, a_i) = max_{\theta} Q (s_i, a_i) = max_{\theta} \sum_{i=t}^{N} \gamma^(i-t) r_i = max_{\theta} \left( r(s_i, a_i) + \gamma Q^{\*}(s_{i+1}, a_{i+1}) \right) $
 
 This recursion says: given the current state $s_i$, the best policy will pick an action that maximizes the sum of instant reward $r(s_i, a_i)$ and the discounted future "value".
 
@@ -47,7 +47,7 @@ How to train such a model? We want to iteratively update this model's outputs as
 
 We define a loss function as:
 
-$SmoothL1Loss \left Q(s_i, a_i) - max (r_i + \gamma Q(s_{i+1}, a_{i+1})) \right $
+$SmoothL1Loss \left( Q(s_i, a_i) - max (r_i + \gamma Q(s_{i+1}, a_{i+1})) \right) $
 
 where $r_i$ is the instant reward at step $i$, and $Q (s_{i+1}, a_{i+1}) $ is the action value at the next state $s_{i+1}$ taking next an action $a_{i+1}$.
 
