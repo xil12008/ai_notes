@@ -15,7 +15,7 @@ The reward of this trajectory is defined as
 
 $R(\tau) = \sum_{i=0}^{N} \gamma^i r_i $
 
-where $r_i(s_i, a_i)$ is the reward at the time i (when the state was $s_i$ and the agent took action $a_i$).
+where $r_i(s_i, a_i)$ is the reward at the time i (when the state was $s_i$ and the agent took action $a_i$). For simplicity, the rewards are deterministic given the state and action. (Actually, the next state and current reward can both be probablistic).
 
 This is called action-value function. Also called "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
 
