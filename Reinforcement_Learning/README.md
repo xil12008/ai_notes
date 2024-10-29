@@ -45,7 +45,7 @@ If we have such a model, under any state, the agent can pick the best action cor
 
 How to train such a model? 
 
-We want to **iteratively** update this model's outputs as the agent iteract with the environment (aka online learning).
+We want to **iteratively** update this model's outputs as the agent iteract with the environment.
 
 Define a loss function as:
 
