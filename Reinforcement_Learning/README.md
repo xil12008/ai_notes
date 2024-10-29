@@ -3,21 +3,23 @@
 ## Problem Statement
 The interaction between an agent and its environment is formalized as Markov Decision Process.
 
-The agent takes an action $a_t$ at time t, and this action causes the state changing from $s_t$ to $s_{t+1}$. 
+The agent takes an action $a_i$ at time i, and this action causes the state changing from $s_i$ to $s_{i+1}$. 
 
-A policy is about which action to take under that state: $\theta = P(a_{t+1} | s_t)$
+A policy is about which action to take under that state: $\theta = P(a_{i+1} | s_i)$
 
-From a starting state to a termination state, the trajectory of the state, action is like:
+From a starting state $s_0$ to a termination state $s_N$, the trajectory of the state, action is like:
 
 $\tau = s_0, a_0, s_1, a_1, \dots, a_{N-1}, s_N$
 
 The reward of this trajectory is defined as
 
-$R(\tau) = \sum_{t=0}^{N} \gamma^t r_t $
+$R(\tau) = \sum_{i=0}^{N} \gamma^i r_i $
 
-where $r_t(s_t, a_t)$ is the reward at the time t (when the state was $s_t$ and the agent took action $a_t$).
+where $r_i(s_i, a_i)$ is the reward at the time i (when the state was $s_i$ and the agent took action $a_i$).
 
-The reinforcement learning aims to maximize the reward:
+This is called action-value function. Also called "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
+
+The reinforcement learning aims to find a best policy that maximizes the "discounted" reward:
 
 $max_{\theta} R(\tau)$
 
@@ -25,11 +27,9 @@ $max_{\theta} R(\tau)$
 
 Assume the action space consists of K different discrete choices.
 
-Q-learning estimates the "value" taking each action under the current state $s_i$:
+Q-learning estimates the "value" taking each action under the current state $s_i$ at time $t$:
 
-$ Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^(i -t) r_t $
-
-This is called action-value function. Also called "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
+$ Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^(i - t) r_t $
 
 The best policy $\theta^{\*}$ will pick an action $a_i^{\*}$ that maximizes $ Q(s_i, a_i) $. Thus,
 
