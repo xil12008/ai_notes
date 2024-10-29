@@ -41,19 +41,26 @@ DQN (Deep Q-Network) builds a deep neutral network which:
 - takes the current state $s$ as input
 - outputs K head, each head being the action value $Q^{\*}(s, a)$ for each action $a$.
 
-If we have such a model, under any state, the agent can pick the best action corresponding to max output head (ie. we obtained the best policy).
+If we have such a model, under any state, the agent can pick the best action corresponding to max output head (ie. the best policy).
 
-How to train such a model? We want to iteratively update this model's outputs as the agent iteract with the environment (aka online learning).
+How to train such a model? 
 
-We define a loss function as:
+We want to **iteratively** update this model's outputs as the agent iteract with the environment (aka online learning).
 
-$SmoothL1Loss \left( Q(s_i, a_i) - max (r_i + \gamma Q(s_{i+1}, a_{i+1})) \right) $
+Define a loss function as:
+
+$SmoothL1Loss \left( Q(s_i, a_i) - max_{\theta} (r_i + \gamma Q(s_{i+1}, a_{i+1})) \right) = SmoothL1Loss \left( Q(s_i, a_i) - r_i  - \gamma max_{\theta} ( Q(s_{i+1}, a_{i+1})) \right) $
 
 where $r_i$ is the instant reward at step $i$, and $Q (s_{i+1}, a_{i+1}) $ is the action value at the next state $s_{i+1}$ taking next an action $a_{i+1}$.
 
-The intuition is -- the current estimation $Q(s,a)$ will gradually get closer to $Q^{\*}(s,a)$.
+The intuition is -- the current estimation $Q(s,a)$ will gradually get closer to $Q^{\*}(s,a)$; the agent is correcting itself by learning from the instant rewards.
 
-So we can let the agent play a game and store the trajectory of the state, action and reward. 
-Then we can compute a loss based on the tuple of $(s_i, a_i, s_{i+1}, r_{i})$.
+So we can let the agent play a game and store the trajectory of the state, action and reward.
+
+Then we can compute a loss based on a batch of the tuples of $(s_i, a_i, s_{i+1}, r_{i})$ and then update the network weights.
+
+Notice that we will need to balance the exploitation and exploration of the agent. 
+
+So by certain chance, we let the agent pick a random action, instead of picking the best action that maximizes the current $Q(s, a)$.
 
 ## Continous Actions (PPO)
