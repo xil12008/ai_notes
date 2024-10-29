@@ -29,7 +29,7 @@ Assume the action space consists of K different discrete choices.
 
 Q-learning estimates the "value" taking each action under the current state $s_i$ at time $t$:
 
-$ Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^(i - t) r_t $
+$Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^(i - t) r_t$
 
 The best policy $\theta^{\*}$ will pick an action $a_i^{\*}$ that maximizes $ Q(s_i, a_i) $. Thus,
 
