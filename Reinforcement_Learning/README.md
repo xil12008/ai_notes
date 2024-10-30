@@ -64,3 +64,8 @@ Notice that we will need to balance the exploitation and exploration of the agen
 So by certain chance, we let the agent pick a random action, instead of picking the best action that maximizes the current $Q(s, a)$.
 
 ## Continous Actions (PPO)
+
+The expectation of the "discounted" reward is:
+
+$\mathbb{E}_{\tau} [ R(\tau)] $
+
