@@ -17,7 +17,7 @@ $R(\tau) = \sum_{i=0}^{N} \gamma^i r_i $
 
 where $r_i = r(s_i, a_i)$ is the reward function at the time i.
 
-If starting from time $t$, this is the action-value function $Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^i r_i$. 
+If starting from time $t$, this is the action-value function $Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^i r_i$. 
 
 It's also called "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
 
