@@ -21,7 +21,7 @@ If starting from time $t$, this is the action-value function $Q(s_i, a_i) = \sum
 
 It's also called "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
 
-The reinforcement learning aims to find a best policy that maximizes the expected "discounted" reward:
+The reinforcement learning aims to find a best policy that maximizes the expected summed "discounted" reward:
 
 $max_{\theta} \mathbb{E}[ R(\tau) ]$
 
