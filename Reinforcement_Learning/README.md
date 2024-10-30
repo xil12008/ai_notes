@@ -5,7 +5,7 @@ The interaction between an agent and its environment is formalized as Markov Dec
 
 The agent takes an action $a_i$ at time i, and this action causes the state changing from $s_i$ to $s_{i+1}$. 
 
-A policy is about which action to take under that state: $\theta = P(a_{i+1} | s_i)$
+A policy is about which action to take under that state: probablity of taking action $a_i$ under $s_i$ is $\pi_{\theta}(a_{i} | s_i)$
 
 From a starting state $s_0$ to a termination state $s_N$, the trajectory of the state, action is like:
 
