@@ -17,7 +17,7 @@ $R(\tau) = \sum_{i=0}^{N} \gamma^i r_i $
 
 where $r_i = r(s_i, a_i)$ is the reward function at the time i.
 
-This is called action-value function $Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^i r_i $ $. Also called "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
+This is called action-value function $Q(s_i, a_i) = \sum_{i=t}^{N} \gamma^i r_i$. Also called "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
 
 The reinforcement learning aims to find a best policy that maximizes the expected "discounted" reward:
 
