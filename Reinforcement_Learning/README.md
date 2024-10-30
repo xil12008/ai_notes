@@ -21,7 +21,7 @@ This is called action-value function. Also called "discounted" reward because a 
 
 The reinforcement learning aims to find a best policy that maximizes the "discounted" reward:
 
-$max_{\theta} R(\tau)$
+$max_{\theta} \mathbb{E}( R(\tau) )$
 
 ## Discrete Actions (Deep Q-learning)
 
