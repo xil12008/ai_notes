@@ -5,7 +5,9 @@ The interaction between an agent and its environment is formalized as Markov Dec
 
 The agent takes an action $a_i$ at time i, and this action causes the state changing from $s_i$ to $s_{i+1}$.
 
-A policy $\pi_\theta$ parameterized by $\theta$ is about which action to take under that state: $\pi_{\theta}(a_{i} | s_i)$ denotes the probablity of taking action $a_i$ under $s_i$.
+A policy $\pi_\theta$ parameterized by $\theta$ determines which action to take under that state $s_i$.
+
+$\pi_{\theta}(a_{i} | s_i)$ denotes the probablity of taking action $a_i$ under $s_i$.
 
 Notice the dynamics of state change $P(s_{i+1} | s_i, a_i)$ is independent of the policy.
 
