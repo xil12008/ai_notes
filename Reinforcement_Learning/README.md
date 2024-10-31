@@ -7,7 +7,7 @@ The agent takes an action $a_i$ at time i, and this action causes the state chan
 
 A policy $\theta$ is about which action to take under that state: $\pi_{\theta}(a_{i} | s_i)$ denotes the probablity of taking action $a_i$ under $s_i$.
 
-Notice the dynamics of state change P(s_{i+1} | s_i, a_i) is independent of the policy.
+Notice the dynamics of state change $P(s_{i+1} | s_i, a_i)$ is independent of the policy.
 
 From a starting state $s_0$ to a termination state $s_N$, the trajectory of the state, action is like:
 
