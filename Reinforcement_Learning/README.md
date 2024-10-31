@@ -53,13 +53,13 @@ How to train such a model?
 
 We want to **iteratively** update this model's outputs as the agent iteract with the environment.
 
+The intuition is -- the current estimation $Q(s,a)$ will gradually get closer to $Q^{\*}(s,a)$; the agent is correcting itself by learning from the instant rewards.
+
 Define a loss function as:
 
 $SmoothL1Loss \left( Q(s_i, a_i) - max_{\theta} (r_i + \gamma Q(s_{i+1}, a_{i+1})) \right) = SmoothL1Loss \left( Q(s_i, a_i) - r_i  - \gamma max_{\theta} ( Q(s_{i+1}, a_{i+1})) \right) $
 
-where $r_i$ is the instant reward at step $i$, and $Q (s_{i+1}, a_{i+1}) $ is the action value at the next state $s_{i+1}$ taking next an action $a_{i+1}$.
-
-The intuition is -- the current estimation $Q(s,a)$ will gradually get closer to $Q^{\*}(s,a)$; the agent is correcting itself by learning from the instant rewards.
+where $r_i$ is the instant reward at step $i$, and $Q(s_{i+1}, a_{i+1})$ is the action value at the next state $s_{i+1}$ taking next an action $a_{i+1}$.
 
 So we can let the agent play a game and store the trajectory of the state, action and reward.
 
