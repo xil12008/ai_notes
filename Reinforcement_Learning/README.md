@@ -3,9 +3,11 @@
 ## Problem Statement
 The interaction between an agent and its environment is formalized as Markov Decision Process.
 
-The agent takes an action $a_i$ at time i, and this action causes the state changing from $s_i$ to $s_{i+1}$. 
+The agent takes an action $a_i$ at time i, and this action causes the state changing from $s_i$ to $s_{i+1}$.
 
 A policy $\theta$ is about which action to take under that state: $\pi_{\theta}(a_{i} | s_i)$ denotes the probablity of taking action $a_i$ under $s_i$.
+
+Notice the dynamics of state change P(s_{i+1} | s_i, a_i) is independent of the policy.
 
 From a starting state $s_0$ to a termination state $s_N$, the trajectory of the state, action is like:
 
@@ -15,11 +17,11 @@ The reward of this trajectory is defined as
 
 $R(\tau) = \sum_{i=0}^{N} \gamma^i r_i $
 
-where $r_i = r(s_i, a_i)$ is the reward function at the time i.
+where $r_i = r(s_i, a_i)$ is the reward at the time i. Notice the reward can also be probablistic.
 
-If starting from time $t$, this is the action-value function $Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^i r_i$. 
+If starting from time $t$, the action-value function is defined as $Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^i r_i$. 
 
-It's also called "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
+It's also called the "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
 
 The reinforcement learning aims to find a best policy that maximizes the expected summed "discounted" reward:
 
@@ -29,15 +31,17 @@ $max_{\theta} \mathbb{E}[ R(\tau) ]$
 
 Assume the action space consists of K different discrete choices.
 
-Q-learning estimates the "value" taking each action under the current state $s_i$ at time $t$:
+Q-learning estimates the "value" taking each action under the current state $s_i$ at time $t$, ie.
 
 $Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^{i - t} r_i$
 
-The best policy $\theta^{\*}$ will pick an action $a_i^{\*}$ that maximizes $Q(s_i, a_i) $. Thus,
+The best policy $\theta^{\*}$ will pick an action $a_t^{\*}$ that maximizes $Q(s_t, a_t) $. Thus,
 
 $Q^{\*}(s_t, a_t) = max_{\theta} Q (s_t, a_t) = max_{\theta} \sum_{i=t}^{N} \gamma^{i-t} r_i = max_{\theta} \left( r(s_t, a_t) + \gamma Q^{\*}(s_{t+1}, a_{t+1}) \right) $
 
 This recursion says: given the current state $s_t$, the best policy will pick an action that maximizes the sum of the **instant** reward $r_t(s_t, a_t)$ and the discounted **future** "value".
+
+The "memoryless" Markov property says the future evolution of the process is independent of its history -- to maximize $Q^{\*}(s_t, a_t)$, one must maximize Q^{\*}(s_{t+1}, a_{t+1}).
 
 DQN (Deep Q-Network) builds a deep neutral network which:
 - takes the current state $s$ as input
