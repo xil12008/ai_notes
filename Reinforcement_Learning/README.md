@@ -41,7 +41,7 @@ $Q^{\*}(s_t, a_t) = max_{\theta} Q (s_t, a_t) = max_{\theta} \sum_{i=t}^{N} \gam
 
 This recursion says: given the current state $s_t$, the best policy will pick an action that maximizes the sum of the **instant** reward $r_t(s_t, a_t)$ and the discounted **future** "value".
 
-The "memoryless" Markov property says the future evolution of the process is independent of its history -- to maximize $Q^{\*}(s_t, a_t)$, one must maximize Q^{\*}(s_{t+1}, a_{t+1}).
+The "memoryless" Markov property says the future evolution of the process is independent of its history -- to maximize $Q^{\*}(s_t, a_t)$, one must maximize $Q^{\*}(s_{t+1}, a_{t+1})$.
 
 DQN (Deep Q-Network) builds a deep neutral network which:
 - takes the current state $s$ as input
