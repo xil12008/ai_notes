@@ -9,7 +9,7 @@ A policy $\pi_\theta$ parameterized by $\theta$ determines which action to take 
 
 $\pi_{\theta}(a_{i} | s_i)$ denotes the probablity of taking action $a_i$ under $s_i$.
 
-Notice the dynamics of state change $P(s_{i+1} | s_i, a_i)$ is independent of the policy.
+Notice the environment dynamics $P(s_{i+1} | s_i, a_i)$ is independent of the policy.
 
 From a starting state $s_0$ to a termination state $s_N$, the trajectory of the state, action is like:
 
