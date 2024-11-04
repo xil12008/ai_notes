@@ -43,21 +43,23 @@ $Q^{\*}(s_t, a_t) = max_{\theta} Q (s_t, a_t) = max_{\theta} \sum_{i=t}^{N} \gam
 
 This recursion says: given the current state $s_t$, the best policy will pick an action that maximizes the sum of the **instant** reward $r_t(s_t, a_t)$ and the discounted **future** "value".
 
-The "memoryless" Markov property says the future evolution of the process is independent of its history -- to maximize $Q(s_t, a_t)$, one must maximize $Q(s_{t+1}, a_{t+1})$.
+If we have such a model, under any state $s_t$, this model can output all $Q^*(s_t, a_t)$ for each valid action $a_t$. 
+
+Then one can pick the best action corresponding to the max action value, ie. we derived the best policy.
 
 DQN (Deep Q-Network) builds a deep neutral network which:
 - takes the current state $s$ as input
 - outputs K head, each head being the action value $Q^{\*}(s, a)$ for each action $a$.
 
-If we have such a model, under any state, the agent can pick the best action corresponding to max output head (ie. the best policy).
+How to train such a model?
 
-How to train such a model? 
+The "memoryless" Markov property says the future evolution of the process is independent of its history -- to maximize $Q(s_t, a_t)$, one must maximize $Q(s_{t+1}, a_{t+1})$.
 
 We want to **iteratively** update this model's outputs as the agent iteract with the environment.
 
 The intuition is -- the current estimation $Q(s,a)$ will gradually get closer to $Q^{\*}(s,a)$; the agent is correcting itself by learning from the instant rewards.
 
-Define a loss function as:
+Let's define a loss function as:
 
 $SmoothL1Loss \left( Q(s_i, a_i) - max_{\theta} (r_i + \gamma Q(s_{i+1}, a_{i+1})) \right) = SmoothL1Loss \left( Q(s_i, a_i) - r_i  - \gamma max_{\theta} ( Q(s_{i+1}, a_{i+1})) \right) $
 
@@ -70,6 +72,10 @@ Then we can compute a loss based on a batch of the tuples of $(s_i, a_i, s_{i+1}
 Notice that we will need to balance the exploitation and exploration of the agent. 
 
 So by certain chance, we let the agent pick a random action, instead of picking the best action that maximizes the current $Q(s, a)$.
+
+Notice this way the policy generating the trajectories/replays is not the final policy that DQN converges to. So the DQN is off-policy RL.
+
+Off-policy is usually preferred than on-policy because it can also leverage the histories/replays generated from other (random/prior) policies.
 
 ## Continous Actions (PPO)
 
