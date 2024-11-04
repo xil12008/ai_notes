@@ -23,7 +23,7 @@ where $r_i = r(s_i, a_i)$ is the reward at the time i. Notice the reward can als
 
 If starting from time $t$, the action-value function is defined as $Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^i r_i$. 
 
-It's also called the "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x << 1$.
+It's also called the "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x < 1$.
 
 The reinforcement learning aims to find a best policy that maximizes the expected summed "discounted" reward:
 
