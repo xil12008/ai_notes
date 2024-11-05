@@ -112,5 +112,5 @@ Actor-critic methods consist of two models, which may optionally share parameter
 - Critic: updates the estimation of $A(s_i, a_i)$
 - Actor: use the estimated $A(s_i, a_i)$ to update policy (ie. minimize the loss)
 
-
+The behavior policy $\pi_{\text{old}}$ used for sampling can be different than the target policy the agent $\pi$ wants to learn.
 
