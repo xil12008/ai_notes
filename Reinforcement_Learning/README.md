@@ -1,15 +1,19 @@
 # Reinforcement Learning
 
 ## Problem Statement
-The interaction between an agent and its environment is formalized as Markov Decision Process.
+The interaction between an agent and its environment is formalized as Markov Decision Process (MDP).
 
-The agent takes an action $a_i$ at time i, and this action causes the state changing from $s_i$ to $s_{i+1}$.
+The policy defines the probablity of an agent taking action $a_i$ under $s_i$ is:
 
-A policy $\pi_\theta$ parameterized by $\theta$ determines which action to take under that state $s_i$.
+$$
+\pi_{\theta}(a_i | s_i)
+$$
 
-$\pi_{\theta}(a_{i} | s_i)$ denotes the probablity of taking action $a_i$ under $s_i$.
+This action $a_i$ causes the state changing from $s_i$ to $s_{i+1}$ with probability:
 
-Notice the environment dynamics $P(s_{i+1} | s_i, a_i)$ is independent of the policy.
+$$
+P(s_{i+1} | s_i, a_i)
+$$ 
 
 From a starting state $s_0$ to a termination state $s_N$, the trajectory of the state, action is like:
 
@@ -21,65 +25,17 @@ $R(\tau) = \sum_{i=0}^{N} \gamma^i r_i $
 
 where $r_i = r(s_i, a_i)$ is the reward at the time i. Notice the reward can also be probablistic.
 
-If starting from time $t$, the action-value function is defined as $Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^i r_i$. 
+If starting from time $t$, the one defintion for the action-value function is
 
-It's also called the "discounted" reward because a future rewards x steps away get "discounted" by a factor of $\gamma^x < 1$.
+$$
+Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^i r_i
+$$ 
+
+It's also called the "discounted" reward because a future rewards get "discounted" by a factor of $\gamma^i < 1$.
 
 The reinforcement learning aims to find a best policy that maximizes the expected summed "discounted" reward:
 
 $max_{\theta} \mathbb{E}[ R(\tau) ]$
-
-## Discrete Actions (Deep Q-learning)
-
-Assume the action space consists of K different discrete choices.
-
-Q-learning estimates the "value" taking each action under the current state $s_i$ at time $t$, ie.
-
-$Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^{i - t} r_i$
-
-The best policy $\theta^{\*}$ will pick an action $a_t^{\*}$ that maximizes $Q(s_t, a_t) $. Thus,
-
-$Q^{\*}(s_t, a_t) = max_{\theta} Q (s_t, a_t) = max_{\theta} \sum_{i=t}^{N} \gamma^{i-t} r_i = max_{\theta} \left( r(s_t, a_t) + \gamma Q^{\*}(s_{t+1}, a_{t+1}) \right) $
-
-This recursion says: given the current state $s_t$, the best policy will pick an action that maximizes the sum of the **instant** reward $r_t(s_t, a_t)$ and the discounted **future** "value".
-
-If we have such a model, under any state $s_t$, this model can output all $Q^*(s_t, a_t)$ for each valid action $a_t$. 
-
-Then one can pick the best action corresponding to the max action value, ie. we derived the best policy.
-
-DQN (Deep Q-Network) builds a deep neutral network which:
-- takes the current state $s$ as input
-- outputs K head, each head being the action value $Q^{\*}(s, a)$ for each action $a$.
-
-How to train such a model?
-
-The "memoryless" Markov property says the future evolution of the process is independent of its history -- to maximize $Q(s_t, a_t)$, one must maximize $Q(s_{t+1}, a_{t+1})$.
-
-We want to **iteratively** update this model's outputs as the agent iteract with the environment.
-
-The intuition is -- the current estimation $Q(s,a)$ will gradually get closer to $Q^{\*}(s,a)$; the agent is correcting itself by learning from the instant rewards.
-
-Let's define a loss function (temporal difference of one step $TD(0)$, looking at the error by comparing current estimate and the future estimate, aka. boostraping -- making a guess out of a guess) as:
-
-$SmoothL1Loss \left( Q(s_i, a_i) - max_{\theta} (r_i + \gamma Q(s_{i+1}, a_{i+1})) \right) = SmoothL1Loss \left( Q(s_i, a_i) - r_i  - \gamma max_{\theta} ( Q(s_{i+1}, a_{i+1})) \right) $
-
-where $r_i$ is the instant reward at step $i$, and $Q(s_{i+1}, a_{i+1})$ is the action value at the next state $s_{i+1}$ taking next an action $a_{i+1}$.
-
-So we can let the agent play a game and store the trajectory of the state, action and reward.
-
-Then we can compute a loss based on a batch of the tuples of $(s_i, a_i, s_{i+1}, r_{i})$ and then update the network weights.
-
-Notice that we will need to balance the **exploitation and exploration** of the agent. 
-
-So by certain chance, we let the agent pick a random action, instead of picking the best action that maximizes the current $Q(s, a)$.
-
-Notice this way the policy generating the trajectories/replays is not the final policy that DQN converges to. So the DQN is off-policy RL.
-
-Off-policy is usually preferred than on-policy because it can also leverage the histories/replays generated from other policies (random/prior policies, instead of the one Q-learning aims to learn) .
-
-The **maximization bias** can cause q-learning to converge slowly, this is because: the max in the loss function can have some bias simply due to noise, then it sticks to that action max a future Q.
-
-To be more robust, double Q-learning use two networks -- one to pick the action, the other to estimate the action-value, in order to reduce the **maximization bias**.
 
 ## Continous Actions (PPO)
 
@@ -143,3 +99,55 @@ Actor-critic methods consist of two models, which may optionally share parameter
 - Actor: use the estimated $A(s_i, a_i)$ to update policy (ie. minimize the loss)
 
 The behavior policy $\pi_{\text{old}}$ used for sampling can be different than the target policy the agent $\pi$ wants to learn.
+
+## Discrete Actions (Deep Q-learning)
+
+Assume the action space consists of K different discrete choices.
+
+Q-learning estimates the "value" taking each action under the current state $s_i$ at time $t$, ie.
+
+$Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^{i - t} r_i$
+
+The best policy $\theta^{\*}$ will pick an action $a_t^{\*}$ that maximizes $Q(s_t, a_t) $. Thus,
+
+$Q^{\*}(s_t, a_t) = max_{\theta} Q (s_t, a_t) = max_{\theta} \sum_{i=t}^{N} \gamma^{i-t} r_i = max_{\theta} \left( r(s_t, a_t) + \gamma Q^{\*}(s_{t+1}, a_{t+1}) \right) $
+
+This recursion says: given the current state $s_t$, the best policy will pick an action that maximizes the sum of the **instant** reward $r_t(s_t, a_t)$ and the discounted **future** "value".
+
+If we have such a model, under any state $s_t$, this model can output all $Q^*(s_t, a_t)$ for each valid action $a_t$. 
+
+Then one can pick the best action corresponding to the max action value, ie. we derived the best policy.
+
+DQN (Deep Q-Network) builds a deep neutral network which:
+- takes the current state $s$ as input
+- outputs K head, each head being the action value $Q^{\*}(s, a)$ for each action $a$.
+
+How to train such a model?
+
+The "memoryless" Markov property says the future evolution of the process is independent of its history -- to maximize $Q(s_t, a_t)$, one must maximize $Q(s_{t+1}, a_{t+1})$.
+
+We want to **iteratively** update this model's outputs as the agent iteract with the environment.
+
+The intuition is -- the current estimation $Q(s,a)$ will gradually get closer to $Q^{\*}(s,a)$; the agent is correcting itself by learning from the instant rewards.
+
+Let's define a loss function (temporal difference of one step $TD(0)$, looking at the error by comparing current estimate and the future estimate, aka. boostraping -- making a guess out of a guess) as:
+
+$SmoothL1Loss \left( Q(s_i, a_i) - max_{\theta} (r_i + \gamma Q(s_{i+1}, a_{i+1})) \right) = SmoothL1Loss \left( Q(s_i, a_i) - r_i  - \gamma max_{\theta} ( Q(s_{i+1}, a_{i+1})) \right) $
+
+where $r_i$ is the instant reward at step $i$, and $Q(s_{i+1}, a_{i+1})$ is the action value at the next state $s_{i+1}$ taking next an action $a_{i+1}$.
+
+So we can let the agent play a game and store the trajectory of the state, action and reward.
+
+Then we can compute a loss based on a batch of the tuples of $(s_i, a_i, s_{i+1}, r_{i})$ and then update the network weights.
+
+Notice that we will need to balance the **exploitation and exploration** of the agent. 
+
+So by certain chance, we let the agent pick a random action, instead of picking the best action that maximizes the current $Q(s, a)$.
+
+Notice this way the policy generating the trajectories/replays is not the final policy that DQN converges to. So the DQN is off-policy RL.
+
+Off-policy is usually preferred than on-policy because it can also leverage the histories/replays generated from other policies (random/prior policies, instead of the one Q-learning aims to learn) .
+
+The **maximization bias** can cause q-learning to converge slowly, this is because: the max in the loss function can have some bias simply due to noise, then it sticks to that action max a future Q.
+
+To be more robust, double Q-learning use two networks -- one to pick the action, the other to estimate the action-value, in order to reduce the **maximization bias**.
