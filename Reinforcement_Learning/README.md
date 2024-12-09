@@ -3,7 +3,7 @@
 ## Problem Statement
 The interaction between an agent and its environment is formalized as Markov Decision Process (MDP).
 
-The policy defines the probablity of an agent taking action $a_i$ under $s_i$ is:
+The policy defines the probablity of an agent taking action $a_i$ under $s_i$, which is:
 
 $$
 \pi_{\theta}(a_i | s_i)
@@ -15,29 +15,40 @@ $$
 P(s_{i+1} | s_i, a_i)
 $$ 
 
-From a starting state $s_0$ to a termination state $s_N$, the trajectory of the state, action is like:
+From a starting state $s_0$ to a termination state $s_N$, the trajectory of the state, action is:
 
-$\tau = s_0, a_0, s_1, a_1, \dots, a_{N-1}, s_N$
+$$
+\tau = s_0, a_0, s_1, a_1, \dots, a_{N-1}, s_N
+$$
 
 The reward of this trajectory is defined as
 
-$R(\tau) = \sum_{i=0}^{N} \gamma^i r_i $
+$$
+R(\tau) = \sum_{i=0}^{N} \gamma^i r_i
+$$
 
 where $r_i = r(s_i, a_i)$ is the reward at the time i. Notice the reward can also be probablistic.
 
-If starting from time $t$, the one defintion for the action-value function is
+If starting from time $t$, one defintion for the action-value function is
 
 $$
-Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^i r_i
-$$ 
+Q(s_t, a_t) = \sum_{i=t}^{N} \gamma^{i-t} r_i
+$$
 
-It's also called the "discounted" reward because a future rewards get "discounted" by a factor of $\gamma^i < 1$.
+It's also called the "discounted" reward because a future rewards get "discounted" by a factor of $\gamma^{i-t} < 1$.
 
 The reinforcement learning aims to find a best policy that maximizes the expected summed "discounted" reward:
 
-$max_{\theta} \mathbb{E}[ R(\tau) ]$
+$$
+\theta^{*} = argmax_{\theta} \mathbb{E}[ R(\tau) ]
+$$
 
-## Continous Actions (PPO)
+There are generally two stylies of reinforcement learning:
+
+- approximate the action-value $Q(s, a)$ for each action $a$ under each state $s$, so the policy can choose the best action.
+- approximate the policy $\pi_{\theta}(a_i | s_i)$ directly; the derived policy should maximize the total rewards.
+
+## Policy Gradient Approximation
 
 The expectation of the "discounted" reward is:
 
