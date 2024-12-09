@@ -47,7 +47,7 @@ $$
 
 Notice that the value for the same state can be different for different policies, eg. a state can be very useful for a strategy, but not useful for another strategy.
 
-For this reason, both state-value and action-value functions are subscript-ed by $\theta$.
+For this reason, both state-value $V_{\theta}$ and action-value $Q_{\theta}$ functions are subscript-ed by $\theta$.
 
 The reinforcement learning aims to find a best policy that maximizes the expected summed "discounted" reward:
 
@@ -102,44 +102,59 @@ $$
 = \sum_i \left[ \nabla_{\theta} \pi_{\theta}(a_i | s_0) Q(s_0, a_i) + \pi_{\theta}(a_i | s_0) \sum_s P(s | s_0, a_i) \nabla_{\theta} V(s) \right]
 $$
 
+Unrolling the equation, for any state $s_k$, the term $\nabla_{\theta} \pi_{\theta}(a_{i_k} | s_k) Q(s_k, a_{i_k})$ will appears repeatedly with multipliers:
+
+$$
+\sum_{s_0, a_0, s_1, a_1, ..., s_{k-1}, a_{k-1}, s_k} \pi_{\theta}(a_{i_0} | s_0) P(s_1 | s_0, a_{i_0})  ... \pi_{\theta}(a_{i_{k-1}} | s_{k-1}) P(s_k | s_{k-1}, a_{i_{k-1}})
+$$
+
 Therefore,
 
 $$
-\nabla_{\theta} E_{\tau}[R(\tau)] = E_{\tau}[R(\tau) \sum_{i=0}^{N_{\tau}} \nabla_{\theta} \log{\pi_{\theta}(a_i | s_i})]
+\nabla_{\theta} V(s_0) \propto E_{\pi} \[ \sum_a Q(s, a) \nabla_{\theta} \pi_{\theta}(a | s) \] 
 $$
+
+Here the expectation $E_{\pi}\[\]$ over a policy $\pi$ means we can sample this term $\sum_a Q(s, a) \nabla_{\theta} \pi_{\theta}(a | s)$ by Monto Carlo method as this policy visits each state.
+
+The summation can be inconvenient. Thus,
+
+$$
+\nabla_{\theta} V(s_0) \propto E_{\pi} \[ \sum_a \pi_{\theta}(a | s) Q(s, a) \frac{\nabla_{\theta} \pi_{\theta}(a | s)}{\pi_{\theta}(a | s)} \] = E_{\pi} \[ Q(s, a) \frac{\nabla_{\theta} \pi_{\theta}(a | s)}{\pi_{\theta}(a | s)} \] 
+$$
+
+Then the sampling is also applied over the action this policy takes.
+
+It turns out for any term $b(s)$ that is irrelevant to the actions, the following expectation is zero:
+
+$$
+E_{\pi} \left[ b(s) \nabla \log \left( \pi_\theta(a | s) \right) \right] = 0
+$$
+
+Therefore, the gradient is also:
+
+$$
+E_{\pi} \left[ A(s, a) \nabla \log \left( \pi_\theta(a | s) \right) \right]
+$$
+where the advantage function $A(s, a) = Q(s, a) - V(s)$ reflects the advantage of selecting some action $a$ compared to selecting the average action.
+
+To maximize $E_{\tau}[R(\tau)]$, adding the gradient means:
+- if $A(s, a) > 0$, increasing $\pi_\theta(a|s)$;
+- if $A(s, a) < 0$, decreasing $\pi_\theta(a|s)$.
 
 The loss function that has the same gradient is (the negative sign is needed because we minimize loss):
 
 $$
-E_{\tau}[- R(\tau) \sum_{i=0}^{N_{\tau}} \log{\pi_{\theta}(a_i | s_i})]
+E_{\pi} \left[ A(s, a) \log \left( \pi_\theta(a | s) \right) \right]
 $$
 
-This is inconvenient because we will have to go through the entire trajectory to compute $R(\tau)$ for each of the $\log{\pi_{\theta}(a_i | s_i})$.
-
-Mathematically, we can simplifies the gradient to be (skipped the math deduction):
-
-$$
-\nabla_{\theta} E_{\tau}[R(\tau)] \propto E_{i} \left[ A(s_i, a_i) \nabla \log \left( \pi_\theta(a_i | s_i) \right) \right]
-$$
-
-where the advantage function $A(s_i, a_i) = Q(s_i, a_i) - E_{a_i}[Q(s_i, a_i)])$ reflects the advantage of selecting some action $a_i$ compared to selecting the average action.
-
-To maximize $E_{\tau}[R(\tau)]$, adding the gradient means:
-- if $A(s_i, a_i) > 0$, increasing $\pi_\theta(a_i|s_i)$;
-- if $A(s_i, a_i) < 0$, decreasing $\pi_\theta(a_i|s_i)$.
-
-A loss function that has the same gradient is 
-
-$$
-Loss = E_{i} \left[ A(s_i, a_i) \log \left( \pi_\theta(a_i | s_i) \right) \right]
-$$
-
-Notice we also need to estimate the $A(s_i, a_i) = Q(s_i, a_i) - E_{a_i}[Q(s_i, a_i)])$. 
+Notice we also need to estimate the $A(s_i, a_i) = Q(s_i, a_i) - V(s_i)$. 
 
 Actor-critic methods consist of two models, which may optionally share parameters:
 
-- Critic: updates the estimation of $A(s_i, a_i)$
-- Actor: use the estimated $A(s_i, a_i)$ to update policy (ie. minimize the loss)
+- Critic: updates the estimation of $A(s_i, a_i)$.
+- Actor: use the estimated $A(s_i, a_i)$ to update the policy $\theta(a | s)$.
+
+Off-policy learning:
 
 The behavior policy $\pi_{\text{old}}$ used for sampling can be different than the target policy the agent $\pi$ wants to learn.
 
