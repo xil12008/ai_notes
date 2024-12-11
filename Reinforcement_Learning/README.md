@@ -2,6 +2,9 @@
 
 ## Problem Statement
 The interaction between an agent and its environment is formalized as Markov Decision Process (MDP).
+- agent state + environment forms a state; it changes from state to state over time.
+- agent selects an action given the current state -- this is call policy (what RL wants to learn)
+- an state and action can produce certain reward (RL goal is to maximize the reward).
 
 The policy defines the probablity of an agent taking action $a_i$ under $s_i$, which is:
 
@@ -74,55 +77,56 @@ Policy Gradient Approximation follows the second schema.
 
 ## Policy Gradient Approximation
 
-Since we are only interested in the $\pi_{\theta}(a | s)$ that produces the maximum reward rather than what exactly the reward is,
-
-we just need its gradient over the policy parameters $\theta$, which is
+Since we are NOT interested in what exactly the reward is, we just want to maximize it, so we only need the gradient over the policy parameters $\theta$, which is
 
 $$
 \nabla_{\theta} V(s_0) = \nabla_{\theta} \left[ \sum_i \pi_{\theta}(a_i | s_0) Q(s_0, a_i) \right]
 $$
 
-Notice the enviroment is independent of the policy $\pi$, so 
+Notice the enviroment is independent of the policy $\pi$, so for any next state $S$,
 
 $$
-\nabla_{\theta} P(s_{i+1} | s_i, a_i) = 0
+\nabla_{\theta} P(S | s_i, a_i) = 0
 $$ 
+
+$$
+\nabla_{\theta} r(s_0, a_i) = 0
+$$
 
 Thus,
 
 $$
-\nabla_{\theta} Q(s_0, a_i) = \nabla_{\theta} \sum_s P(s, r | s_0, a_i) [ r(s_0, a_i) + V(s) ] = \sum_s \nabla_{\theta} P(s | s_0, a_i) V(s) = \sum_s P(s | s_0, a_i) \nabla_{\theta} V(s)
+\nabla_{\theta} Q(s_0, a_i) = \nabla_{\theta} \sum_s P(S | s_0, a_i) [ r(s_0, a_i) + V(s) ] = \sum_s \nabla_{\theta} P(S | s_0, a_i) V(S) = \sum_s P(S | s_0, a_i) \nabla_{\theta} V(S)
 $$
 
-That way, we derived a recurisive definition from $s_0$ to any state $s$ as follow,
+That way, we derived a recurisive definition from $s_0$ to any state $S$ as follow,
 
 $$
-\nabla_{\theta} V(s_0) 
-= \sum_i \nabla_{\theta} \pi_{\theta}(a_i | s_0) Q(s_0, a_i) + \pi_{\theta}(a_i | s_0) \nabla_{\theta} Q(s_0, a_i)
-= \sum_i \left[ \nabla_{\theta} \pi_{\theta}(a_i | s_0) Q(s_0, a_i) + \pi_{\theta}(a_i | s_0) \sum_s P(s | s_0, a_i) \nabla_{\theta} V(s) \right]
+\begin{align}
+\nabla_{\theta} V(s_0) \\
+&= \sum_i \nabla_{\theta} \pi_{\theta}(a_i | s_0) Q(s_0, a_i) + \pi_{\theta}(a_i | s_0) \nabla_{\theta} Q(s_0, a_i) \\
+&= \sum_i \left[ \nabla_{\theta} \pi_{\theta}(a_i | s_0) Q(s_0, a_i) + \pi_{\theta}(a_i | s_0) \sum_S P(S | s_0, a_i) \nabla_{\theta} V(S) \right] \\
+&= \sum_i \left[ \pi_{\theta}(a_i | s_0) \left( \nabla_{\theta}  \log ( \pi_{\theta}(a_i | s_0) ) Q(s_0, a_i) \right) + \pi_{\theta}(a_i | s_0) \sum_S P(S | s_0, a_i) \nabla_{\theta} V(S) \right] \\
+\end{align}
 $$
 
-Unrolling the equation, for any state $s_k$, the term $\nabla_{\theta} \pi_{\theta}(a_{i_k} | s_k) Q(s_k, a_{i_k})$ will appears repeatedly with multipliers:
+Unrolling the equation, for any state $s$, the term $\nabla_{\theta}  \log ( \pi (A | S) ) Q(S, A)$ will appears repeatedly with a multiplier:
 
 $$
-\sum_{s_0, a_0, s_1, a_1, ..., s_{k-1}, a_{k-1}, s_k} \pi_{\theta}(a_{i_0} | s_0) P(s_1 | s_0, a_{i_0})  ... \pi_{\theta}(a_{i_{k-1}} | s_{k-1}) P(s_k | s_{k-1}, a_{i_{k-1}})
+\sum_k P(s_0 \rightarrow S, A; k, \pi)
 $$
 
-Therefore,
+where $P(s_0 \rightarrow S, A; k, \pi)$ is the probability of reaching that state $S$ from $s_0$ in k steps and make the next action $A$ following the policy $\pi$. 
+
+This is perfect for Monte Carlo simulation. Basically, this multiplier is proportional to the frequency the agent reaches the state $S$ and makes action $A$ by simulation.
+
+In other words,
 
 $$
-\nabla_{\theta} V(s_0) \propto E_{\pi} \[ \sum_a Q(s, a) \nabla_{\theta} \pi_{\theta}(a | s) \] 
+\nabla_{\theta} V(s_0) \propto E_{\pi} \[ Q(s, a) \nabla_{\theta} \log( \pi_{\theta}(a | s) ) \] 
 $$
 
-Here the expectation $E_{\pi}\[\]$ over a policy $\pi$ means we can sample this term $\sum_a Q(s, a) \nabla_{\theta} \pi_{\theta}(a | s)$ by Monto Carlo method as this policy visits each state.
-
-The summation can be inconvenient. Thus,
-
-$$
-\nabla_{\theta} V(s_0) \propto E_{\pi} \[ \sum_a \pi_{\theta}(a | s) Q(s, a) \frac{\nabla_{\theta} \pi_{\theta}(a | s)}{\pi_{\theta}(a | s)} \] = E_{\pi} \[ Q(s, a) \frac{\nabla_{\theta} \pi_{\theta}(a | s)}{\pi_{\theta}(a | s)} \] 
-$$
-
-Then the sampling is also applied over the action this policy takes.
+Here the expectation $E_{\pi}\[\]$ over a policy $\pi$ means we can sample this term $Q(s, a) \nabla_{\theta} \log( \pi_{\theta}(a | s) )$ by Monto Carlo method as this policy visits each state.
 
 It turns out for any term $b(s)$ that is irrelevant to the actions, the following expectation is zero:
 
