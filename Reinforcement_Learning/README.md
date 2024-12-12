@@ -40,7 +40,7 @@ $$
 Q_{\theta}(s_t, a_t) = \sum_{i=t}^{N} \gamma^{i-t} r_i
 $$
 
-It's also called the "discounted" reward because a future rewards get "discounted" by a factor of $\gamma^{i-t} < 1$.
+It's also called the "discounted" reward because a future rewards get "discounted" by a factor of $\gamma^{i-t} < 1$. Making recent reward more valuable is usually prefer when the environment is non-stationary.
 
 The state-value function (aka. value function) is the expected action-value:
 
