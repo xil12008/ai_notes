@@ -123,10 +123,10 @@ This is perfect for Monte Carlo simulation. Basically, this multiplier is propor
 In other words,
 
 $$
-\nabla_{\theta} V(s_0) \propto E_{\pi} \[ Q(s, a) \nabla_{\theta} \log( \pi_{\theta}(a | s) ) \] 
+\nabla_{\theta} V(s_0) \propto E_{\pi} \left[ Q(s, a) \nabla_{\theta} \log( \pi_{\theta}(a | s) ) \right] 
 $$
 
-Here the expectation $E_{\pi}\[\]$ over a policy $\pi$ means we can sample this term $Q(s, a) \nabla_{\theta} \log( \pi_{\theta}(a | s) )$ by Monto Carlo method as this policy visits each state.
+Here the expectation $E_{\pi}\[\]$ over a policy $\pi$ means we can sample this term $Q(s, a) \nabla_{\theta} \log( \pi_{\theta}(a | s) )$ by Monte Carlo method as this policy visits each state.
 
 It turns out for any term $b(s)$ that is irrelevant to the actions, the following expectation is zero:
 
@@ -134,28 +134,44 @@ $$
 E_{\pi} \left[ b(s) \nabla \log \left( \pi_\theta(a | s) \right) \right] = 0
 $$
 
-Therefore, the gradient is also:
+because, say if we do the math backwards as we did above, the left-side equation is proportional to $\nabla_{\theta} \left[ \sum_i \pi_{\theta}(a_i | s_0) b(s) \right] = 0$.
+
+Therefore, we can replace the action-value function $Q$ by the advantage function $A$:
 
 $$
-E_{\pi} \left[ A(s, a) \nabla \log \left( \pi_\theta(a | s) \right) \right]
+\nabla_{\theta} V(s_0) = E_{\pi} \left[ A(s, a) \nabla_{\theta} \log \left( \pi_{\theta}(a | s) \right) \right] 
 $$
+
 where the advantage function $A(s, a) = Q(s, a) - V(s)$ reflects the advantage of selecting some action $a$ compared to selecting the average action.
 
-To maximize $E_{\tau}[R(\tau)]$, adding the gradient means:
+The advantage function reduce the variance over different states.
+
+The loss function that has the same gradient is:
+
+$$
+E_{\pi} \left[ - A(s, a) \log \left( \pi_\theta(a | s) \right) \right]
+$$
+
+Here the negative sign is needed because we minimize the objective function by moving towards the opposite gradient direction.
+
+To maximize $V(s_0)$, minimizing the loss means:
 - if $A(s, a) > 0$, increasing $\pi_\theta(a|s)$;
 - if $A(s, a) < 0$, decreasing $\pi_\theta(a|s)$.
 
-The loss function that has the same gradient is (the negative sign is needed because we minimize loss):
+Notice we also need to estimate the $\hat{A}(s, a)$ as part of the learning. 
+
+Actor-critic methods consist of two models, which may optionally share some parameters (ex. the base tower of a neutral network):
+
+- Critic: updates the estimation of $A(s, a)$:
 
 $$
-E_{\pi} \left[ A(s, a) \log \left( \pi_\theta(a | s) \right) \right]
+\hat{A}(s_t, a_t) = \hat{Q}(s_t, a_t) - \hat{V}(s_t) = r_t + \gamma * \hat{V}(s_{t+1}) - \hat{V}(s_t)
 $$
 
-Notice we also need to estimate the $A(s_i, a_i) = Q(s_i, a_i) - V(s_i)$. 
+To estimate $\hat{V}(s_t)$, a natural choice is TD(0):
 
-Actor-critic methods consist of two models, which may optionally share parameters:
 
-- Critic: updates the estimation of $A(s_i, a_i)$.
+
 - Actor: use the estimated $A(s_i, a_i)$ to update the policy $\theta(a | s)$.
 
 Off-policy learning:
